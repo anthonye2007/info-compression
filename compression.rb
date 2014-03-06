@@ -6,3 +6,4 @@
 input = File.read(ARGV.first)
 words = input.split("\n")
 puts words.length.to_s
+puts words.first
