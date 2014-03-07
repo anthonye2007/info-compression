@@ -70,11 +70,16 @@ def second_compression(words)
 end
 
 def print_root(root, remainders)
-  str = root.length.to_s + root + '@'
+  if remainders.length > 1
+    str = root.length.to_s + root + '@'
 
-  remainders.each do |remainder|
-    str += '*'unless str[-1] == '@'
-    str += remainder.length.to_s + remainder
+    remainders.each do |remainder|
+      str += '*'unless str[-1] == '@'
+      str += remainder.length.to_s + remainder
+    end
+  else
+    word = root + remainders.first
+    str = word.length.to_s + word
   end
 
   str
