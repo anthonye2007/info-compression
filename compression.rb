@@ -43,7 +43,7 @@ end
 
 def second_compression(words)
   output = File.open('second.bin', 'wb')
-  root_length = 4
+  root_length = 3
 
   root = ''
   remainders = []
@@ -74,9 +74,9 @@ def print_root(root, remainders)
     str = root.length.to_s + root + '@'
 
     remainders.each do |remainder|
-      str += '*'unless str[-1] == '@'
       str += remainder.length.to_s + remainder
     end
+    str += '*'
   else
     word = root + remainders.first
     str = word.length.to_s + word
