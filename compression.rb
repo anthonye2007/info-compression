@@ -43,15 +43,22 @@ end
 
 def second_compression(words)
   output = File.open('second.bin', 'wb')
-  root_length = 3
+  root_length = 5
+
+  #large_file = File.read('large.txt')
+  #large_words = large_file.split("\n")
+
+  lengths = Hash.new
 
   root = ''
   remainders = []
   words.each do |word|
     if word.length < root_length
+      # not long enough to be stemmed
       output << word.length
       output << word
     elsif word[0..root_length-1] == root
+      # should be stemmed
       remainder = word.slice(root_length, word.length - 1)
       remainders.push(remainder)
     else
@@ -60,13 +67,27 @@ def second_compression(words)
 
       root = word[0..root_length-1]
       remainders = []
-      remainder = word.slice(root_length, word.length - 1)
+      remainder = word.slice(root.length, word.length - 1)
       remainders.push(remainder)
     end
 
+    lengths[root] = remainders.length
   end
 
   output.close
+end
+
+def get_root(word, root_length, large_words)
+  large_words.each do |large_word|
+    next if word.length < large_word.length
+    if word[0..large_word.length-1] == large_word
+      puts 'Stemming ' + word + ' to ' + large_word
+      return large_word
+    end
+  end
+
+  puts word[0..root_length-1]
+  word[0..root_length-1]
 end
 
 def print_root(root, remainders)
@@ -96,7 +117,7 @@ def max_length (words)
     end
   end
 
-  puts "Max length: " + max.to_s
+  puts 'Max length: ' + max.to_s
 end
 
 input = File.read(ARGV.first)
