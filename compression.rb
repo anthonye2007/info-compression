@@ -3,50 +3,9 @@
 # Information Storage and Retrieval
 # 3/6/2014
 
-# size, base word * remainder of first word * remainder of second word
-
-def first_compression(words)
-  output = File.open('first.bin', 'wb')
-
-  words.each do |word|
-    output << word
-    output << [word.length].pack('C')
-  end
-
-  output.close
-end
-
-def stemming(words)
-  # make one pass and do porter stemming to get base words
-  # make second pass to output base word * remainder
-
-  stems = []
-  words.each do |word|
-    if word.length >= 4 && word.slice(-4, word.length) == 'sses'
-      stem = word[0..-3] # sses -> ss
-      stems.push(stem) unless stems[-1] == stem
-    elsif word.length >= 3 && word.slice(-3, word.length) == 'ies'
-      stem = word[0..-3] # ies -> ss
-      stems.push(stem) unless stems[-1] == stem
-    elsif word.length >= 2 && word.slice(-2, word.length) == 'ss'
-      stem = word
-      stems.push(stem) unless stems[-1] == stem
-    elsif word.length >= 2 and word.slice(-1, word.length) == 's'
-      stem = word[0..-2] # s ->
-      stems.push(stem) unless stems[-1] == stem
-    end
-  end
-
-  puts stems.to_s
-  puts 'Number of stems: ' + stems.length.to_s
-end
-
 def second_compression(words)
   output = File.open('second.bin', 'wb')
   root_length = 5
-
-  #large_file = File.read('large.txt')
-  #large_words = large_file.split("\n")
 
   lengths = Hash.new
 
@@ -77,27 +36,14 @@ def second_compression(words)
   output.close
 end
 
-def get_root(word, root_length, large_words)
-  large_words.each do |large_word|
-    next if word.length < large_word.length
-    if word[0..large_word.length-1] == large_word
-      puts 'Stemming ' + word + ' to ' + large_word
-      return large_word
-    end
-  end
-
-  puts word[0..root_length-1]
-  word[0..root_length-1]
-end
-
 def print_root(root, remainders)
   if remainders.length > 1
-    str = root.length.to_s + root + '@'
+    str = root.length.to_s + root + '*'
 
     remainders.each do |remainder|
       str += remainder.length.to_s + remainder
     end
-    str += '*'
+    str += '@'
   else
     word = root + remainders.first
     str = word.length.to_s + word
@@ -106,22 +52,7 @@ def print_root(root, remainders)
   str
 end
 
-# max length of word is 28 characters
-# can represent with 5 bits
-def max_length (words)
-  max = 0;
-  words.each do |word|
-    if word.length > max
-      max = word.length
-      puts word
-    end
-  end
-
-  puts 'Max length: ' + max.to_s
-end
-
 input = File.read(ARGV.first)
 words = input.split("\n")
 
-#first_compression(words)
 second_compression(words)
